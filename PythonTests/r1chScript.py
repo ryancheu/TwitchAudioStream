@@ -16,7 +16,6 @@
 
 import urllib2;
 import sys;
-import getopt;
 import json;
 import re;
 import os;
