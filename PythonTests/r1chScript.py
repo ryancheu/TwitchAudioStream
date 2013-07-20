@@ -2,7 +2,7 @@
 #just audio so auto selects lowest stream quality
 
 #Starts stream on localhost, use ifconfig to get IP address if local,
-#or use port forwarding
+#or use port forwarding if remote
 
 #Requires rtmpdump and vlc to be installed
 #Will only work on OSX and linux, probably not that difficult
