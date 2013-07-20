@@ -1,0 +1,8 @@
+package ryancheu.twitchaudio;
+
+public class AudioStream {
+	private String mUsername;
+	public AudioStream(String username) {
+		
+	}
+}
