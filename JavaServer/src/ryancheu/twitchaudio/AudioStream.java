@@ -13,6 +13,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+
 public class AudioStream {
 	/** Twitch.tv username for this stream*/
     private String mUsername;
@@ -22,11 +23,21 @@ public class AudioStream {
     private Process mProcess;    
     /** Last time this stream was requested by a user*/
     private long lastRequest = 0;
+    
+    public static void main(String[] args){
+    	AudioStream at = new AudioStream("dreamhacktv", 8080);
+    	try {
+    		at.beginStreaming();
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    }
 
     public AudioStream(String username, int port) {
         mUsername = username;
         mPort = port;
-    }
+    }    
 
     
     /**
@@ -212,10 +223,5 @@ public class AudioStream {
                 reader.close();
         }
 
-    }
-    
-    public static void main(String[] args) throws IOException {
-    	AudioStream at = new AudioStream("dreamhacktv", 8080);
-    	at.beginStreaming();
-    }
+    }        
 }
