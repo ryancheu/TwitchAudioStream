@@ -4,9 +4,14 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.simpleframework.http.Part;
+import org.simpleframework.http.Query;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
@@ -15,9 +20,9 @@ import org.simpleframework.transport.Server;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
+import com.google.gson.JsonObject;
 
-
-public class AudioServer implements Container{
+public class AudioServer implements Container {
 	private static final int MAX_PORTS = 1000;
 	private static final int START_PORT = 6000;
 
@@ -46,31 +51,44 @@ public class AudioServer implements Container{
 
 	}
 
-	 public static void main(String[] list) throws Exception {
-	      Container container = new AudioServer();
-	      Server server = new ContainerServer(container);
-	      Connection connection = new SocketConnection(server);
-	      SocketAddress address = new InetSocketAddress(8080);
+	public static void main(String[] list) throws Exception {
+		Container container = new AudioServer();
+		Server server = new ContainerServer(container);
+		Connection connection = new SocketConnection(server);
+		SocketAddress address = new InetSocketAddress(8080);
 
-	      connection.connect(address);
-	   }
+		connection.connect(address);
+	}
 
 	public void handle(Request request, Response response) {
 		try {
-	         PrintStream body = response.getPrintStream();
-	         long time = System.currentTimeMillis();
-	   
-	         response.setValue("Content-Type", "text/plain");
-	         response.setValue("Server", "HelloWorld/1.0 (Simple 4.0)");
-	         response.setDate("Date", time);
-	         response.setDate("Last-Modified", time);
-	   
-	         body.println("Hello World");
-	         body.close();
-	      } catch(Exception e) {
-	         e.printStackTrace();
-	      }
-		
+			PrintStream body = response.getPrintStream();
+			long time = System.currentTimeMillis();
+
+			Query query = request.getQuery();
+			
+			//TODO: put this in a config file or something
+			String username = query.get("username");
+			if ( username == null || username.length() == 0 ) {
+				username = request.getParameter("u");
+			}
+			
+			AudioStream as = getSteamForUsername(username);						
+			
+			response.setValue("Content-Type", "text/plain");
+			response.setValue("Server", "TwitchAudio/1.0 (Simple 4.0)");
+			response.setDate("Date", time);
+			response.setDate("Last-Modified", time);
+
+			JsonObject reply = new JsonObject();
+			reply.addProperty("port", as.getPort());
+			
+			body.println(reply.toString());
+			body.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

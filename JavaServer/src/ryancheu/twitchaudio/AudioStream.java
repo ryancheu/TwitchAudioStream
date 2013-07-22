@@ -25,7 +25,7 @@ public class AudioStream {
     private long lastRequest = 0;
     
     public static void main(String[] args){
-    	AudioStream at = new AudioStream("dreamhacktv", 8080);
+    	AudioStream at = new AudioStream("snipealot2", 8080);
     	try {
     		at.beginStreaming();
     	} catch (IOException e) {
@@ -37,8 +37,11 @@ public class AudioStream {
     public AudioStream(String username, int port) {
         mUsername = username;
         mPort = port;
-    }    
-
+    }
+    
+    public int getPort() {
+    	return  mPort;
+    }
     
     /**
      * Starts streaming specified twitch username on given port
@@ -93,7 +96,7 @@ public class AudioStream {
     }
     
     public static void testStreamData() {
-    	AudioStream stream = new AudioStream("gaulzi", 8080);
+    	AudioStream stream = new AudioStream("snipealot2", 8080);
     	stream.testGetStreamData();
     }
     
