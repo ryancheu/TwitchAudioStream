@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+import com.idkjava.twitchaudio.networking.GetPortTask;
+import com.idkjava.twitchaudio.networking.GetPortTask.OnPortFoundListener;
 import com.idkjava.twitchaudio.networking.StreamingServerConnectionManager;
 
 import android.media.MediaPlayer;
@@ -20,15 +22,15 @@ import android.widget.EditText;
 
 public class HomeActivity extends Activity {
 	
-	private EditText mServerAddr;
-	private EditText mTwitchUser;
-	private Button mStartStreamButton;
-	private Button mStopAudioButton;
+    private EditText mServerAddr;
+    private EditText mTwitchUser;
+    private Button mStartStreamButton;
+    private Button mStopAudioButton;
 	
-	private MediaPlayer mPlayer;
+    private MediaPlayer mPlayer;
 	
-	private static final String TAG ="HomeActivity";
-	private static final boolean DEBUG=true;
+    private static final String TAG ="HomeActivity";
+    private static final boolean DEBUG=true;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,55 +49,53 @@ public class HomeActivity extends Activity {
     private void initButtons() {
         mStartStreamButton.setOnClickListener( new OnClickListener() {
 			
-			@Override
-			public void onClick(View v) {
-				startStream(mTwitchUser.getText().toString(), 
-						mServerAddr.getText().toString());				
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                startStream(mTwitchUser.getText().toString(), 
+                            mServerAddr.getText().toString());				
+            }
+        });
         
         mStopAudioButton = (Button)findViewById(R.id.home_stop_audio_button);
         
         mStopAudioButton.setOnClickListener(new OnClickListener() {
 			
-			@Override
-			public void onClick(View v) {
-				stopStream();
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                stopStream();
+            }
+        });
         
         
     }
     
-    private void startStream(String twitchUsername, String serverAddress) {
-    	int port = -1;
-		try {
-			port = StreamingServerConnectionManager.
-					getPortForUsername(twitchUsername, serverAddress);
-		} catch (ClientProtocolException e) {
-			Log.e(TAG, "Couldn't connect to streaming server \n" 
-					+ e.getStackTrace());
+    private void startStream(String twitchUsername, final String serverAddress) {
 
-		} catch (IOException e) {
-			Log.e(TAG, "Couldn't connect to streaming server \n"
-					+ e.getStackTrace());			
-		} catch (JSONException e) {
-			Log.e(TAG, "Couldn't parse json from streaming server \n"
-					+ e.getStackTrace());						
-		}
+        new GetPortTask(twitchUsername, new OnPortFoundListener() {
+
+			@Override
+			public void onPortFound(int port) {
+				startStreamingOnPort(port, serverAddress);
+				
+			}
+        }).execute(serverAddress);
 		
+    }
+
+    private void startStreamingOnPort(int port, String serverAddress) {
     	if ( port != -1) {    		
-    		mPlayer = MediaPlayer.create(this, Uri.parse(serverAddress +":port"));
-        	mPlayer.start();
-        	if (DEBUG) {
-        		Log.d(TAG, "starting playing stream from server");
-        	}        	
+            mPlayer = MediaPlayer.create(this, Uri.parse(serverAddress +":port"));
+            mPlayer.start();
+            if (DEBUG) {
+                Log.d(TAG, "starting playing stream from server");
+            }        	
     	}
     }
+
     
     private void stopStream() {
     	if (mPlayer != null) {
-    		mPlayer.stop();
+            mPlayer.stop();
     	}
     }
 

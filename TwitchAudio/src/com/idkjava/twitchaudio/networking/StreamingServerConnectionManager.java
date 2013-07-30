@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.net.Uri;
+import android.util.Log;
 
 public class StreamingServerConnectionManager {
 	
@@ -20,12 +21,17 @@ public class StreamingServerConnectionManager {
 	
 	public static int getPortForUsername(String username, String serverUrl) 
 			throws ClientProtocolException, IOException, JSONException {
+
+		Log.d("Streaming try", "json: try ");
 		DefaultHttpClient defaultClient = new DefaultHttpClient();
-		HttpGet httpGetRequest = new HttpGet(serverUrl+"?" + URL_USERNAME_PARAM +"="+Uri.encode(username));		
+		String url = "http://" + serverUrl+"/?" + URL_USERNAME_PARAM +"="+Uri.encode(username);
+		Log.d("Streaming","url: " + url);
+		HttpGet httpGetRequest = new HttpGet(url);		
 		HttpResponse httpResponse = defaultClient.execute(httpGetRequest);
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
 		String json = reader.readLine();
+		Log.d("Streaming", "json: " + json);
 
 		JSONObject jsonResponse = new JSONObject(json);
 		if ( jsonResponse.has(PORT_PARAM)) {
