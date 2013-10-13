@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TwitchAudio</string>
+    <string name="action_settings">Settings</string>
+    <string name="server_address">Server Address: </string>
+    <string name="twitch_username">Twitch username: </string>
+    <string name="start_stream">Start Stream</string>
+    <string name="stop_audio">Stop Audio</string>
+
+</resources>

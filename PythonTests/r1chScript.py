@@ -30,8 +30,8 @@ json = json.loads(jsonRaw.read());
 lowest = 2024;
 lowestIndex = 0;
 for i in range(len(json)):
-    quality = re.search('[0-9]+',json[i]['display']);
-    test = int(quality.group(0));
+    quality = json[i]["video_height"]
+    test = quality;
     if test < lowest :
         lowest = test;
         lowestIndex = i;
